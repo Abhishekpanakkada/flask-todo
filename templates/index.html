@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flask Todo App</title>
+</head>
+<body>
+  <h1>✅ My Todo List</h1>
+
+  <input id="taskInput" placeholder="Enter a task">
+  <button onclick="addTodo()">Add</button>
+
+  <ul id="todoList"></ul>
+
+  <script>
+    async function fetchTodos() {
+      const res = await fetch("/todos");
+      const todos = await res.json();
+      const list = document.getElementById("todoList");
+      list.innerHTML = "";
+      todos.forEach(t => {
+        const li = document.createElement("li");
+        li.textContent = t.task;
+        list.appendChild(li);
+      });
+    }
+
+    async function addTodo() {
+      const task = document.getElementById("taskInput").value;
+      await fetch("/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task })
+      });
+      document.getElementById("taskInput").value = "";
+      fetchTodos();
+    }
+
+    fetchTodos();
+  </script>
+</body>
+</html>
